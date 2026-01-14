@@ -107,8 +107,17 @@ class PdoClienteRepository implements ClienteRepository
                 $cliente['nome'],
                 $cliente['telefone'],
                 $cliente['email'],
+                null
             );
         }
         return $clienteTratado;
+    }
+
+    public function verificaEmail($email)
+    {
+        $sql = "SELECT * FROM cliente WHERE email = :emailCliente";
+        $query = $this->conexao->prepare($sql);
+        $query->bindParam(":emailCliente", $email);
+        return $query->execute();
     }
 }

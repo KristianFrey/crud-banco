@@ -8,4 +8,5 @@ interface ClienteRepository
     public function salvarCliente(Cliente $cliente);
     public function buscaClientePorNome(Cliente $cliente);
     public function buscaTodosClientes();
+    public function verificaEmail($email);
 }
