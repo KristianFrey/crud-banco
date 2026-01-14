@@ -1,11 +1,30 @@
 <?php
 require_once __DIR__ . '/../../Infraestrutura/conexaoBanco.php';
 require_once __DIR__ . '/../../Infraestrutura/Repository/PdoClienteRepository.php';
+require_once __DIR__ . '/Cliente.php';
 
 $pdo = ConexaoBanco::conectarBanco();
-$clienteRepository = new PdoClienteRepository($pdo);
+$dados = new PdoClienteRepository();
+$modelCliente = new Cliente($dados);
 
-$dados = $clienteRepository->buscaTodosClientes();
+if (isset($_POST['nome'])) { //verifica se a pessoa clicou em cadastrar, atraves do submit
+    if (!empty($nome) && !empty($telefone) && !empty($email)) {
+        $nome = addslashes($_POST['nome']); //addslashes evita sql injection
+        $telefone = addslashes($_POST['telefone']);
+        $email = addslashes($_POST['email']);
+        try {
+            $modelCliente->cadastrarCliente($email, $nome, $telefone);
+            header("Location: index.php");
+            exit;
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
+    } else {
+        echo "Preencha todos os campos";
+    }
+}
+
+$dados = $modelCliente->repository->buscaTodosClientes();
 ?>
 
 <!DOCTYPE html>
@@ -18,9 +37,8 @@ $dados = $clienteRepository->buscaTodosClientes();
 </head>
 
 <body>
-
     <section id="esquerda">
-        <form>
+        <form method="POST">
             <h2>Cadastrar Cliente</h2>
 
             <label for="nome">Nome</label>
@@ -60,7 +78,10 @@ $dados = $clienteRepository->buscaTodosClientes();
                     </td> <?php
                             echo "</tr>";
                         }
-                    } ?>
+                    } else {
+                        echo "Nenhum registro de clientes!";
+                    }
+                            ?>
         </table>
     </section>
 

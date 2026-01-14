@@ -3,27 +3,23 @@
 
 class Cliente
 {
-    public int $id;
-    public string $nome;
-    public string $telefone;
-    public string $email;
+    public null | int $id;
+    public null |string $nome;
+    public null |string $telefone;
+    public null |string $email;
     public null | ClienteRepository $repository;
 
-    public function __construct($id, $nome, $telefone, $email, $clienteRepository)
+    public function __construct($clienteRepository)
     {
-        $this->id = $id;
-        $this->nome = $nome;
-        $this->telefone = $telefone;
-        $this->email = $email;
         $this->repository = $clienteRepository;
     }
 
-    public function cadastrarCliente()
+    public function cadastrarCliente($email, $nome, $telefone)
     {
-        if (count($this->repository->verificaEmail($this->email)) > 0) {
+        if (count($this->repository->verificaEmail($email)) > 0) {
             throw new Exception("Email duplicado no banco. Você deve alterar o registro existente");
         } else {
-            $this->repository->criarCliente($this);
+            $this->repository->criarCliente($nome, $telefone, $email);
         }
     }
 }

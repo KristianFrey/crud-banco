@@ -13,10 +13,10 @@ class PdoClienteRepository implements ClienteRepository
         $this->conexao = conexaoBanco::conectarBanco();
     }
 
-    public function criarCliente(Cliente $cliente): bool
+    public function criarCliente($nome, $telefone, $email)
     {
-
-        $sql = "INSERT INTO cliente (
+        try {
+            $sql = "INSERT INTO cliente (
                     nome, 
                     telefone, 
                     email) 
@@ -25,12 +25,14 @@ class PdoClienteRepository implements ClienteRepository
                     :telefoneCliente, 
                     :emailCliente)";
 
-        $query = $this->conexao->prepare($sql);
-        $query->bindParam(':nomeCliente', $cliente->nome, PDO::PARAM_STR);
-        $query->bindParam(':telefoneCliente', $cliente->telefone, PDO::PARAM_STR);
-        $query->bindParam(':emailCliente', $cliente->email, PDO::PARAM_STR);
-
-        return $query->execute();
+            $query = $this->conexao->prepare($sql);
+            $query->bindParam(':nomeCliente', $nome, PDO::PARAM_STR);
+            $query->bindParam(':telefoneCliente', $telefone, PDO::PARAM_STR);
+            $query->bindParam(':emailCliente', $email, PDO::PARAM_STR);
+            return $query->execute();
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     }
 
     public function deletarCliente(Cliente $cliente): bool
@@ -118,6 +120,7 @@ class PdoClienteRepository implements ClienteRepository
         $sql = "SELECT * FROM cliente WHERE email = :emailCliente";
         $query = $this->conexao->prepare($sql);
         $query->bindParam(":emailCliente", $email);
-        return $query->execute();
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 }

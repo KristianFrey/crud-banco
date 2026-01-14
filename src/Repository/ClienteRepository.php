@@ -2,7 +2,7 @@
 
 interface ClienteRepository
 {
-    public function criarCliente(Cliente $cliente);
+    public function criarCliente($nome, $telefone, $email);
     public function deletarCliente(Cliente $cliente);
     public function alterarCliente(Cliente $cliente);
     public function salvarCliente(Cliente $cliente);
