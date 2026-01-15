@@ -35,15 +35,19 @@ class PdoClienteRepository implements ClienteRepository
         }
     }
 
-    public function deletarCliente(Cliente $cliente): bool
+    public function deletarCliente($id)
     {
-        $sql = "DELETE FROM cliente WHERE id = :idCliente";
-        $query = $this->conexao->prepare($sql);
-        $query->bindParam(":idCliente", $cliente->id, PDO::PARAM_INT);
-        return $query->execute();
+        try {
+            $sql = "DELETE FROM cliente WHERE id = :idCliente";
+            $query = $this->conexao->prepare($sql);
+            $query->bindParam(":idCliente", $id, PDO::PARAM_INT);
+            return $query->execute();
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
     }
 
-    public function alterarCliente(Cliente $cliente): bool
+    public function alterarCliente($id, $nome, $telefone, $email)
     {
         $sql = "UPDATE cliente 
                 SET nome = :nomeCliente, 
@@ -53,21 +57,21 @@ class PdoClienteRepository implements ClienteRepository
                 id = :idCliente";
 
         $query = $this->conexao->prepare($sql);
-        $query->bindParam(":nomeCliente", $cliente->nome, PDO::PARAM_STR);
-        $query->bindParam(":telefoneCliente", $cliente->telefone, PDO::PARAM_STR);
-        $query->bindParam(":emailCliente", $cliente->email, PDO::PARAM_STR);
-        $query->bindParam(":idCliente", $cliente->id, PDO::PARAM_INT);
+        $query->bindParam(":nomeCliente", $nome, PDO::PARAM_STR);
+        $query->bindParam(":telefoneCliente", $telefone, PDO::PARAM_STR);
+        $query->bindParam(":emailCliente", $email, PDO::PARAM_STR);
+        $query->bindParam(":idCliente", $id, PDO::PARAM_INT);
         return $query->execute();
     }
 
-    public function salvarCliente(Cliente $cliente)
+    public function salvarCliente($id, $nome, $telefone, $email)
     {
         $this->conexao->beginTransaction();
         try {
-            if (isset($cliente->id)) {
-                $this->alterarCliente($cliente);
+            if (!empty($id)) {
+                $this->alterarCliente($id, $nome, $telefone, $email);
             } else {
-                $this->criarCliente($cliente);
+                $this->criarCliente($nome, $telefone, $email);
             }
             $this->conexao->commit();
         } catch (\PDOException $e) {
@@ -87,6 +91,19 @@ class PdoClienteRepository implements ClienteRepository
         $query->bindParam(":nomeCliente", $nomeCliente);
         $query->execute();
         return $this->hidratarDados($query);
+    }
+
+    public function buscaClientePorId($id)
+    {
+        $sql = "SELECT * 
+                FROM cliente 
+                WHERE 
+                    id = :idCliente";
+
+        $query =  $this->conexao->prepare($sql);
+        $query->bindParam(":idCliente", $id);
+        $query->execute();
+        return $query->fetch(PDO::FETCH_ASSOC);
     }
 
     public function buscaTodosClientes()
