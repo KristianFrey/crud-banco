@@ -8,12 +8,13 @@ $dados = new PdoClienteRepository();
 $modelCliente = new Cliente($dados);
 
 if (isset($_POST['nome'])) { //verifica se a pessoa clicou em cadastrar, atraves do submit
+    $id = addslashes($_GET['id']); //addslashes evita sql injection
+    $nome = addslashes($_POST['nome']); //addslashes evita sql injection
+    $telefone = addslashes($_POST['telefone']);
+    $email = addslashes($_POST['email']);
     if (!empty($nome) && !empty($telefone) && !empty($email)) {
-        $nome = addslashes($_POST['nome']); //addslashes evita sql injection
-        $telefone = addslashes($_POST['telefone']);
-        $email = addslashes($_POST['email']);
         try {
-            $modelCliente->cadastrarCliente($email, $nome, $telefone);
+            $modelCliente->repository->salvarCliente($id, $nome, $telefone, $email);
             header("Location: index.php");
             exit;
         } catch (Exception $e) {
@@ -22,6 +23,20 @@ if (isset($_POST['nome'])) { //verifica se a pessoa clicou em cadastrar, atraves
     } else {
         echo "Preencha todos os campos";
     }
+}
+
+$delete = $_GET['delete'] ?? null;
+if ($delete == "sim") {
+    $id = ($_GET['id']);
+    $modelCliente->repository->deletarCliente($id);
+    header("Location: index.php");
+    exit;
+}
+
+$update = $_GET['update'] ?? null;
+if ($update == "sim") {
+    $id = ($_GET['id']);
+    $dadosCliente = $modelCliente->repository->buscaClientePorId($id);
 }
 
 $dados = $modelCliente->repository->buscaTodosClientes();
@@ -42,15 +57,25 @@ $dados = $modelCliente->repository->buscaTodosClientes();
             <h2>Cadastrar Cliente</h2>
 
             <label for="nome">Nome</label>
-            <input type="text" name="nome" id="nome">
-
-            <label for="telefone">Telefone</label>
-            <input type="text" name="telefone" id="telefone">
+            <input type="text" name="nome" id="nome" value="<?php if (isset($update)) {
+                                                                echo $dadosCliente['nome'];
+                                                            }  ?>">
+            <label for=" telefone">Telefone</label>
+            <input type="text" name="telefone" id="telefone" value="<?php if (isset($update)) {
+                                                                        echo $dadosCliente['telefone'];
+                                                                    }  ?>">
 
             <label for="email">Email</label>
-            <input type="email" name="email" id="email">
+            <input type="email" name="email" id="email" value="<?php if (isset($update)) {
+                                                                    echo $dadosCliente['email'];
+                                                                }  ?>">
 
-            <input type="submit" value="Cadastrar">
+            <input type="submit" value="<?php if (isset($update)) {
+                                            echo "Atualizar";
+                                        } else {
+                                            echo "Cadastrar";
+                                        }
+                                        ?>">
         </form>
     </section>
 
@@ -73,8 +98,11 @@ $dados = $modelCliente->repository->buscaTodosClientes();
                     echo "<td>" . $cliente['telefone'] . "</td>";
                     echo "<td>" . $cliente['email'] . "</td>"; ?>
                     <td>
-                        <a href="#">Editar</a>
-                        <a href="#">Excluir</a>
+                        <a href="index.php?id=<?= $cliente['id'] ?>&update=sim">Editar</a>
+                        <a href="index.php?id=<?= $cliente['id'] ?>&delete=sim"
+                            onclick="return confirm('Tem certeza que deseja excluir?')">
+                            Excluir
+                        </a>
                     </td> <?php
                             echo "</tr>";
                         }
