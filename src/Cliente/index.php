@@ -2,6 +2,13 @@
 require_once __DIR__ . '/../../Infraestrutura/conexaoBanco.php';
 require_once __DIR__ . '/../../Infraestrutura/Repository/PdoClienteRepository.php';
 require_once __DIR__ . '/Cliente.php';
+require_once __DIR__ . '/../../bootstrap.php';
+require_once __DIR__ . '/../../lib/PhpSpreadsheet-master/PhpSpreadsheet-master/src/PhpSpreadsheet/Teste/Hello.php';
+
+use Teste\Hello;
+
+echo Hello::dizerOi();
+
 
 $pdo = ConexaoBanco::conectarBanco();
 $dados = new PdoClienteRepository();
