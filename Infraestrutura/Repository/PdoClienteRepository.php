@@ -68,15 +68,19 @@ class PdoClienteRepository implements ClienteRepository
     {
         $this->conexao->beginTransaction();
         try {
-            if (!empty($id)) {
-                $this->alterarCliente($id, $nome, $telefone, $email);
-            } else {
-                $this->criarCliente($nome, $telefone, $email);
+            if ($this->validarTelefoneContato($telefone))
+                if (!empty($id)) {
+                    $this->alterarCliente($id, $nome, $telefone, $email);
+                } else {
+                    $this->criarCliente($nome, $telefone, $email);
+                }
+            else {
+                throw new Exception("Telefone inválido.");
             }
             $this->conexao->commit();
-        } catch (\PDOException $e) {
-            echo $e->getMessage();
+        } catch (Exception $e) {
             $this->conexao->rollBack();
+            throw $e;
         }
     }
     public function buscaClientePorNome(Cliente $cliente)
@@ -139,5 +143,11 @@ class PdoClienteRepository implements ClienteRepository
         $query->bindParam(":emailCliente", $email);
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function validarTelefoneContato($telefone)
+    {
+        $regex = '/^(\(?\d{2}\)?\s?)?(\d{4,5})-?\d{4}$/';
+        return preg_match($regex, $telefone) === 1;
     }
 }

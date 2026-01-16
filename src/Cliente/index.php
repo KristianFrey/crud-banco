@@ -8,17 +8,18 @@ $dados = new PdoClienteRepository();
 $modelCliente = new Cliente($dados);
 
 if (isset($_POST['nome'])) { //verifica se a pessoa clicou em cadastrar, atraves do submit
-    $id = addslashes($_GET['id']); //addslashes evita sql injection
-    $nome = addslashes($_POST['nome']); //addslashes evita sql injection
-    $telefone = addslashes($_POST['telefone']);
-    $email = addslashes($_POST['email']);
-    if (!empty($nome) && !empty($telefone) && !empty($email)) {
+    $id = $_POST['id'] ?? null;
+    $nome = $_POST['nome'] ?? null;
+    $telefone = $_POST['telefone'] ?? null;
+    $email = $_POST['email'] ?? null;
+
+    if (isset($nome) && isset($telefone) && isset($email)) {
         try {
             $modelCliente->repository->salvarCliente($id, $nome, $telefone, $email);
             header("Location: index.php");
             exit;
         } catch (Exception $e) {
-            echo $e->getMessage();
+            echo "<p style='color:red'>" . $e->getMessage() . "</p>";
         }
     } else {
         echo "Preencha todos os campos";

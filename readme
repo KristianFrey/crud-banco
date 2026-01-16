@@ -1,0 +1,33 @@
+o que foi feito na criação do projeto:
+1- criada classe com metodo estático de conexão com o banco.  Tratamento de erros.
+2- criado repository que faz as busca do banco.
+3- criado o implements do repository.
+4- criada a primeira classe/model e feito contrutor.
+5- ajustes para teer debug.
+6- criado arquivo index e style
+7- no index instanciado as classes de repository e chamada função que retorna todos os alunos.
+8- criados os box para exibir os dados
+9- no arquivo style definido tamanhos das propriedades, cores, etc.
+10- criado o td e feito foreach dentro dele para fazer a listagem dos dados dos clientes que vvieram da função chamada do repository.
+
+Cadastro de clientes
+11- Em vez de passar o objeto para as funções de cadastro, delete e alteração, pasei a variavel para não precisar criar toda vez com aquilo.
+12- Removi as obrigatoriedades do construtor com os atributos, obrigando apenas a passar o objeto repository.
+13- adicionado try catch no que cadastra os alunos
+14- Adicionado require de cliente em index para poder instanciar e chamar a função de cadastrar clientes
+
+Pegar com POST
+15- Inserido no form esquerda <form method="POST"> que faz dai enviar por post quando for feito o btn submit
+16- Criada estrtura que se existe algo no post, e todos os atributos necessarios tem ali, ele faz um try de cadastrar e redirect, caso n tenha avisa com mensgaem de incompleto.
+17 - passado atributos por get, ou seja na url quando é clicado no botão ele faz um href
+
+
+problemas encontrados
+- padronização pastas do sistema
+- requires
+- pq usar interface?
+
+
+fazer query no pdo repository
+adicionar a regra de consulta no interface
+passar o interface no model e chamar ele no construtor

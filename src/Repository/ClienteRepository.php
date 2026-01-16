@@ -10,4 +10,5 @@ interface ClienteRepository
     public function buscaClientePorId($id);
     public function buscaTodosClientes();
     public function verificaEmail($email);
+    public function validarTelefoneContato($telefone);
 }
