@@ -1,5 +1,7 @@
 <?php
 
+namespace CRUDBANCO\app\Infrastrcture
+
 class conexaoBanco
 {
 
