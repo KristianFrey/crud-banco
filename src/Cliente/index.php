@@ -2,12 +2,9 @@
 require_once __DIR__ . '/../../Infraestrutura/conexaoBanco.php';
 require_once __DIR__ . '/../../Infraestrutura/Repository/PdoClienteRepository.php';
 require_once __DIR__ . '/Cliente.php';
+require_once __DIR__ . '/criarExcel.php';
 require_once __DIR__ . '/../../bootstrap.php';
 require_once __DIR__ . '/../../lib/PhpSpreadsheet-master/PhpSpreadsheet-master/src/PhpSpreadsheet/Teste/Hello.php';
-
-use Teste\Hello;
-
-echo Hello::dizerOi();
 
 
 $pdo = ConexaoBanco::conectarBanco();
@@ -48,6 +45,22 @@ if ($update == "sim") {
 }
 
 $dados = $modelCliente->repository->buscaTodosClientes();
+$action = $_GET['action'] ?? null;
+
+if ($action === "export") {
+    // 1. Ativar erros apenas para ver o que está travando (temporário)
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+
+    if (empty($dados)) {
+        die("Erro: Não existem dados para exportar.");
+    }
+    $modeCriarExcel = new criarExcel();
+    $modeCriarExcel->gerarExcel($dados);
+    exit;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -57,6 +70,11 @@ $dados = $modelCliente->repository->buscaTodosClientes();
     <meta charset="UTF-8">
     <title>Clientes</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-..."
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer">
 </head>
 
 <body>
@@ -85,6 +103,11 @@ $dados = $modelCliente->repository->buscaTodosClientes();
                                         }
                                         ?>">
         </form>
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="exportar.php" class="btn-excel">
+                <i class="fa-solid fa-file-excel"></i> Exportar para Excel
+            </a>
+        </div>
     </section>
 
     <section id="direita">

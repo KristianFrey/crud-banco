@@ -106,3 +106,36 @@ a:last-child {
 a:hover {
     opacity: 0.85;
 }
+
+.btn-excel {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    background: linear-gradient(135deg, #2ecc71, #28a745);
+    color: #ffffff;
+
+    padding: 18px 32px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+
+    text-decoration: none;
+    border-radius: 10px;
+
+    box-shadow: 0 6px 15px rgba(40, 167, 69, 0.35);
+    transition: all 0.25s ease;
+}
+
+.btn-excel:hover {
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+    box-shadow: 0 10px 25px rgba(30, 126, 52, 0.45);
+    transform: translateY(-2px);
+}
+
+.btn-excel:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(30, 126, 52, 0.35);
+}
+
