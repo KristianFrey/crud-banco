@@ -1,15 +1,15 @@
 <?php
-require_once __DIR__ . '/../../Infraestrutura/conexaoBanco.php';
-require_once __DIR__ . '/../../Infraestrutura/Repository/PdoClienteRepository.php';
-require_once __DIR__ . '/Cliente.php';
-require_once __DIR__ . '/criarExcel.php';
-require_once __DIR__ . '/../../bootstrap.php';
-require_once __DIR__ . '/../../lib/PhpSpreadsheet-master/PhpSpreadsheet-master/src/PhpSpreadsheet/Teste/Hello.php';
 
+use App\Infrastructure\ConexaoBanco;
+use Exception;
+use Public\autoload;
+use App\Repository\PdoClienteRepository;
+use App\Models\Cliente;
+use App\Service\ClienteService;
 
 $pdo = ConexaoBanco::conectarBanco();
-$dados = new PdoClienteRepository();
-$modelCliente = new Cliente($dados);
+$dados = new PdoClienteRepository($pdo);
+$clienteService = new ClienteService($dados);
 
 if (isset($_POST['nome'])) { //verifica se a pessoa clicou em cadastrar, atraves do submit
     $id = $_POST['id'] ?? null;
@@ -19,7 +19,7 @@ if (isset($_POST['nome'])) { //verifica se a pessoa clicou em cadastrar, atraves
 
     if (isset($nome) && isset($telefone) && isset($email)) {
         try {
-            $modelCliente->repository->salvarCliente($id, $nome, $telefone, $email);
+            $clienteService->cadastrar($id, $nome, $telefone, $email);
             header("Location: index.php");
             exit;
         } catch (Exception $e) {
@@ -33,7 +33,7 @@ if (isset($_POST['nome'])) { //verifica se a pessoa clicou em cadastrar, atraves
 $delete = $_GET['delete'] ?? null;
 if ($delete == "sim") {
     $id = ($_GET['id']);
-    $modelCliente->repository->deletarCliente($id);
+    $clienteService->deletar($id);
     header("Location: index.php");
     exit;
 }
@@ -41,25 +41,11 @@ if ($delete == "sim") {
 $update = $_GET['update'] ?? null;
 if ($update == "sim") {
     $id = ($_GET['id']);
-    $dadosCliente = $modelCliente->repository->buscaClientePorId($id);
+    $dadosCliente = $clienteService->buscarClienteId($id);
 }
 
-$dados = $modelCliente->repository->buscaTodosClientes();
+$dados = $clienteService->buscarClientes();
 $action = $_GET['action'] ?? null;
-
-if ($action === "export") {
-    // 1. Ativar erros apenas para ver o que está travando (temporário)
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
-
-    if (empty($dados)) {
-        die("Erro: Não existem dados para exportar.");
-    }
-    $modeCriarExcel = new criarExcel();
-    $modeCriarExcel->gerarExcel($dados);
-    exit;
-}
 
 ?>
 
@@ -121,26 +107,28 @@ if ($action === "export") {
             </tr>
 
             <?php
-            if (count($dados) > 0) {
-                foreach ($dados as $cliente) {
-                    echo "<tr>";
-                    echo "<td>" . $cliente['id'] . "</td>";
-                    echo "<td>" . $cliente['nome'] . "</td>";
-                    echo "<td>" . $cliente['telefone'] . "</td>";
-                    echo "<td>" . $cliente['email'] . "</td>"; ?>
-                    <td>
-                        <a href="index.php?id=<?= $cliente['id'] ?>&update=sim">Editar</a>
-                        <a href="index.php?id=<?= $cliente['id'] ?>&delete=sim"
-                            onclick="return confirm('Tem certeza que deseja excluir?')">
-                            Excluir
-                        </a>
-                    </td> <?php
-                            echo "</tr>";
+            if (is_countable($dados)) {
+                if (count($dados) > 0) {
+                    foreach ($dados as $cliente) {
+                        echo "<tr>";
+                        echo "<td>" . $cliente['id'] . "</td>";
+                        echo "<td>" . $cliente['nome'] . "</td>";
+                        echo "<td>" . $cliente['telefone'] . "</td>";
+                        echo "<td>" . $cliente['email'] . "</td>"; ?>
+                        <td>
+                            <a href="index.php?id=<?= $cliente['id'] ?>&update=sim">Editar</a>
+                            <a href="index.php?id=<?= $cliente['id'] ?>&delete=sim"
+                                onclick="return confirm('Tem certeza que deseja excluir?')">
+                                Excluir
+                            </a>
+                        </td> <?php
+                                echo "</tr>";
+                            }
+                        } else {
+                            echo "Nenhum registro de clientes!";
                         }
-                    } else {
-                        echo "Nenhum registro de clientes!";
                     }
-                            ?>
+                                ?>
         </table>
     </section>
 

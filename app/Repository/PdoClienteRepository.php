@@ -1,7 +1,12 @@
 <?php
-require_once __DIR__ . '/../../src/Repository/ClienteRepository.php';
-require_once __DIR__ . '/../../src/Cliente/Cliente.php';
-require_once __DIR__ . '/../ConexaoBanco.php';
+
+namespace App\Repository;
+
+use Pdo;
+use App\Infrastructure\ConexaoBanco;
+use Exception;
+use App\Interfaces\ClienteRepository;
+use App\Models\Cliente;
 
 class PdoClienteRepository implements ClienteRepository
 {
@@ -64,15 +69,15 @@ class PdoClienteRepository implements ClienteRepository
         return $query->execute();
     }
 
-    public function salvarCliente($id, $nome, $telefone, $email)
+    public function salvarCliente(Cliente $cliente)
     {
         $this->conexao->beginTransaction();
         try {
-            if ($this->validarTelefoneContato($telefone))
+            if ($this->validarTelefoneContato($cliente->telefone))
                 if (!empty($id)) {
-                    $this->alterarCliente($id, $nome, $telefone, $email);
+                    $this->alterarCliente($cliente->id, $cliente->nome, $cliente->telefone, $cliente->email);
                 } else {
-                    $this->criarCliente($nome, $telefone, $email);
+                    $this->criarCliente($cliente->nome, $cliente->telefone, $cliente->email);
                 }
             else {
                 throw new Exception("Telefone inválido.");
@@ -83,9 +88,10 @@ class PdoClienteRepository implements ClienteRepository
             throw $e;
         }
     }
-    public function buscaClientePorNome(Cliente $cliente)
+
+    public function buscaClientePorNome($nome)
     {
-        $nomeCliente = "%" . $cliente->nome . "%";
+        $nomeCliente = "%" . $nome . "%";
         $sql = "SELECT * 
                 FROM cliente 
                 WHERE 

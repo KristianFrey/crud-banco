@@ -1,11 +1,13 @@
 <?php
 
-spl_autoload_register(function ($class) {
-    $baseDir = __DIR__ . '/lib/phpspreadsheet/src/';
+spl_autoload_register(function ($className) {
 
-    $file = $baseDir . str_replace('\\', '/', $class) . '.php';
+    $caminho = str_replace('App\\', 'app/', $className);
+    $caminho = str_replace('\\', DIRECTORY_SEPARATOR, $caminho) . '.php';
 
-    if (file_exists($file)) {
-        require $file;
+    $caminhoCompleto = __DIR__ . '/../' . $caminho; // .. para sair de 'public' e entrar em 'app'
+
+    if (file_exists($caminhoCompleto)) {
+        require_once $caminhoCompleto;
     }
 });

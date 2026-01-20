@@ -1,8 +1,12 @@
 <?php
 
-namespace CRUDBANCO\app\Infrastrcture
+namespace App\Infrastructure;
 
-class conexaoBanco
+use PDO;
+use PDOException;
+use Exception;
+
+class ConexaoBanco
 {
 
     public static function conectarBanco(): PDO
