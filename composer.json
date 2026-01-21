@@ -1,0 +1,16 @@
+{
+    "name": "kristian/crudbanco",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Kristian\\Crudbanco\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Kristian Frey",
+            "email": "kristianfrey11@gmail.com"
+        }
+    ],
+    "require": {}
+}
