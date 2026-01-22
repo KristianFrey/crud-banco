@@ -1,10 +1,10 @@
 <?php
 
+require '../CRUDBANCO/vendor/autoload.php';
+
 use App\Infrastructure\ConexaoBanco;
 use Exception;
-use Public\autoload;
 use App\Repository\PdoClienteRepository;
-use App\Models\Cliente;
 use App\Service\ClienteService;
 
 $pdo = ConexaoBanco::conectarBanco();
