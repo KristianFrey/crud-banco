@@ -38,7 +38,7 @@ class ClienteService
     function buscarClienteId($id)
     {
         if ($id >= 0) {
-            $this->buscarClienteId($id);
+            return $this->repository->buscaClientePorId($id);
         } else {
             throw new Exception("Cliente sem Id válido");
         }
@@ -47,7 +47,7 @@ class ClienteService
     function buscarClientes()
     {
         try {
-            $this->repository->buscaTodosClientes();
+            return $this->repository->buscaTodosClientes();
         } catch (\Throwable $e) {
             echo "Erro ao buscar clientes.";
         }

@@ -1,9 +1,9 @@
 <?php
 
-require '../CRUDBANCO/vendor/autoload.php';
+require_once __DIR__ . '../../../vendor/autoload.php';
 
 use App\Infrastructure\ConexaoBanco;
-use Exception;
+use App\Exception;
 use App\Repository\PdoClienteRepository;
 use App\Service\ClienteService;
 
@@ -22,7 +22,7 @@ if (isset($_POST['nome'])) { //verifica se a pessoa clicou em cadastrar, atraves
             $clienteService->cadastrar($id, $nome, $telefone, $email);
             header("Location: index.php");
             exit;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             echo "<p style='color:red'>" . $e->getMessage() . "</p>";
         }
     } else {
@@ -72,7 +72,7 @@ $action = $_GET['action'] ?? null;
             <input type="text" name="nome" id="nome" value="<?php if (isset($update)) {
                                                                 echo $dadosCliente['nome'];
                                                             }  ?>">
-            <label for=" telefone">Telefone</label>
+            <label for="telefone">Telefone</label>
             <input type="text" name="telefone" id="telefone" value="<?php if (isset($update)) {
                                                                         echo $dadosCliente['telefone'];
                                                                     }  ?>">
