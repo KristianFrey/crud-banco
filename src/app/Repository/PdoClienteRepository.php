@@ -74,9 +74,12 @@ class PdoClienteRepository implements ClienteRepository
         $this->conexao->beginTransaction();
         try {
             if ($this->validarTelefoneContato($cliente->telefone))
-                if (!empty($id)) {
+                if (!empty($cliente->id)) {
                     $this->alterarCliente($cliente->id, $cliente->nome, $cliente->telefone, $cliente->email);
                 } else {
+                    if ($this->verificaEmail($cliente->email)) {
+                        throw new Exception("Email duplicado");
+                    }
                     $this->criarCliente($cliente->nome, $cliente->telefone, $cliente->email);
                 }
             else {

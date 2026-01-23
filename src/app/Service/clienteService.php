@@ -12,17 +12,15 @@ class ClienteService
         private ClienteRepository $repository
     ) {}
 
-    public function cadastrar($email, $nome, $telefone)
+    public function cadastrar($id, $nome, $email, $telefone)
     {
-        if ($this->repository->verificaEmail($email)) {
-            throw new Exception("Email duplicado");
-        }
-
         $cliente = new Cliente();
+        if (isset($id)) {
+            $cliente->id = $id;
+        }
         $cliente->nome = $nome;
         $cliente->email = $email;
         $cliente->telefone = $telefone;
-
         $this->repository->salvarCliente($cliente);
     }
 

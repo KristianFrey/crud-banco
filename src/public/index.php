@@ -12,14 +12,14 @@ $dados = new PdoClienteRepository($pdo);
 $clienteService = new ClienteService($dados);
 
 if (isset($_POST['nome'])) { //verifica se a pessoa clicou em cadastrar, atraves do submit
-    $id = $_POST['id'] ?? null;
+    $id = $_GET['id'] ?? null;
     $nome = $_POST['nome'] ?? null;
     $telefone = $_POST['telefone'] ?? null;
     $email = $_POST['email'] ?? null;
 
     if (isset($nome) && isset($telefone) && isset($email)) {
         try {
-            $clienteService->cadastrar($id, $nome, $telefone, $email);
+            $clienteService->cadastrar($id, $nome, $email, $telefone);
             header("Location: index.php");
             exit;
         } catch (\Exception $e) {
