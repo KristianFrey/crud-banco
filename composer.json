@@ -12,5 +12,8 @@
             "email": "kristianfrey11@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "phpoffice/phpspreadsheet": "^5.4",
+        "dompdf/dompdf": "^3.1"
+    }
 }

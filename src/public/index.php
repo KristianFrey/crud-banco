@@ -6,6 +6,8 @@ use App\Infrastructure\ConexaoBanco;
 use App\Exception;
 use App\Repository\PdoClienteRepository;
 use App\Service\ClienteService;
+use App\Service\ExportarPDF;
+use App\Service\PDFService;
 
 $pdo = ConexaoBanco::conectarBanco();
 $dados = new PdoClienteRepository($pdo);
@@ -46,6 +48,14 @@ if ($update == "sim") {
 
 $dados = $clienteService->buscarClientes();
 $action = $_GET['action'] ?? null;
+if ($action == 'pdf') {
+    $domPDF = new PDFService();
+    $caminhoView = __DIR__ . '/../view/ViewCadastroCliente.php';
+    $data = new DateTime('now');
+    $data = $data->format('Y-m-d');
+    $nomeArquivo = 'Clientes' . $data;
+    $domPDF->gerar($dados, $caminhoView, $nomeArquivo);
+}
 
 ?>
 
@@ -89,10 +99,17 @@ $action = $_GET['action'] ?? null;
                                         }
                                         ?>">
         </form>
-        <div style="margin-top: 20px; text-align: center;">
-            <a href="exportar.php" class="btn-excel">
-                <i class="fa-solid fa-file-excel"></i> Exportar para Excel
-            </a>
+        <div>
+            <div style="margin-top: 20px; text-align: center;">
+                <a href="exportar.php" class="btn-excel">
+                    <i class="fa-solid fa-file-excel"></i> Exportar para Excel
+                </a>
+            </div>
+            <div style="margin-top: 20px; text-align: center;">
+                <a href="index.php?action=pdf" class="btn-pdf">
+                    <i class="fa-solid fa-file-pdf"></i> Exportar para PDF
+                </a>
+            </div>
         </div>
     </section>
 

@@ -139,3 +139,34 @@ a:hover {
     box-shadow: 0 4px 10px rgba(30, 126, 52, 0.35);
 }
 
+.btn-pdf {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    background: linear-gradient(135deg, #d71f1f, #a72828);
+    color: #ffffff;
+
+    padding: 18px 32px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+
+    text-decoration: none;
+    border-radius: 10px;
+
+    box-shadow: 0 6px 15px rgba(167, 40, 40, 0.35);
+    transition: all 0.25s ease;
+}
+
+.btn-pdf:hover {
+    background: linear-gradient(135deg, #e02b2b, #b32020);
+    box-shadow: 0 10px 25px rgba(126, 30, 30, 0.45);
+    transform: translateY(-2px);
+}
+
+.btn-pdf:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(126, 30, 30, 0.35);
+}
