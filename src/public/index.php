@@ -6,7 +6,7 @@ use App\Infrastructure\ConexaoBanco;
 use App\Exception;
 use App\Repository\PdoClienteRepository;
 use App\Service\ClienteService;
-use App\Service\ExportarPDF;
+use App\Service\ExcelService;
 use App\Service\PDFService;
 
 $pdo = ConexaoBanco::conectarBanco();
@@ -57,6 +57,17 @@ if ($action == 'pdf') {
     $domPDF->gerar($dados, $caminhoView, $nomeArquivo);
 }
 
+if ($action == 'excel') {
+    $excel = new ExcelService();
+
+    $data = new DateTime('now');
+    $data = $data->format('Y-m-d');
+    $nomeArquivo = 'Clientes' . $data . '.xlsx';
+
+    $excel->gerar($dados, $nomeArquivo);
+    exit;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -101,12 +112,12 @@ if ($action == 'pdf') {
         </form>
         <div>
             <div style="margin-top: 20px; text-align: center;">
-                <a href="exportar.php" class="btn-excel">
+                <a href="index.php?action=excel" class="btn-excel">
                     <i class="fa-solid fa-file-excel"></i> Exportar para Excel
                 </a>
             </div>
             <div style="margin-top: 20px; text-align: center;">
-                <a href="index.php?action=pdf" class="btn-pdf">
+                <a href="index.php?action=pdf" target="_blank" class="btn-pdf">
                     <i class="fa-solid fa-file-pdf"></i> Exportar para PDF
                 </a>
             </div>
